@@ -1,16 +1,19 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { UploadCloud, X } from 'lucide-react';
-import { useCreateGoatMutation, useUploadImageMutation } from '../features/goats/goatsApi';
+import { useGetGoatByIdQuery, useUpdateGoatMutation, useUploadImageMutation } from '../features/goats/goatsApi';
 import Button from '../components/common/Button';
 import Input from '../components/common/Input';
 import toast from 'react-hot-toast';
 
-export default function AddGoat() {
+export default function EditGoat() {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const [createGoat, { isLoading: isCreating }] = useCreateGoatMutation();
+  
+  const { data: goatResponse, isLoading: isFetching } = useGetGoatByIdQuery(id);
+  const [updateGoat, { isLoading: isUpdating }] = useUpdateGoatMutation();
   const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
 
   const [formData, setFormData] = useState({
@@ -26,6 +29,26 @@ export default function AddGoat() {
   });
 
   const [imagePreview, setImagePreview] = useState(null);
+
+  useEffect(() => {
+    if (goatResponse?.data) {
+      const goat = goatResponse.data;
+      setFormData({
+        tagNumber: goat.tagNumber || '',
+        name: goat.name || '',
+        breed: goat.breed || '',
+        gender: goat.gender || 'Female',
+        dateOfBirth: goat.dateOfBirth ? goat.dateOfBirth.split('T')[0] : '',
+        color: goat.color || '',
+        status: goat.status || 'active',
+        notes: goat.notes || '',
+        image: goat.image || '',
+      });
+      if (goat.image) {
+        setImagePreview(goat.image);
+      }
+    }
+  }, [goatResponse]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,13 +78,21 @@ export default function AddGoat() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createGoat(formData).unwrap();
-      toast.success('Goat added successfully!');
+      await updateGoat({ id, ...formData }).unwrap();
+      toast.success('Goat updated successfully!');
       navigate('/dashboard');
     } catch (err) {
-      toast.error(err.data?.message || 'Failed to add goat');
+      toast.error(err.data?.message || 'Failed to update goat');
     }
   };
+
+  if (isFetching) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600"></div>
+      </div>
+    );
+  }
 
   return (
     <motion.div 
@@ -70,13 +101,13 @@ export default function AddGoat() {
       className="max-w-4xl mx-auto"
     >
       <Helmet>
-        <title>Add New Goat | Bukhari Farm</title>
-        <meta name="description" content="Add a new goat to the Bukhari Farm management system." />
+        <title>Edit Goat | Bukhari Farm</title>
+        <meta name="description" content="Edit goat details in the Bukhari Farm management system." />
       </Helmet>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-display font-bold text-stone-900">Add New Goat</h1>
-        <p className="mt-2 text-sm text-stone-500">Enter the details of the new goat to add to your herd.</p>
+        <h1 className="text-3xl font-display font-bold text-stone-900">Edit Goat</h1>
+        <p className="mt-2 text-sm text-stone-500">Update the details of the goat.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
@@ -88,7 +119,7 @@ export default function AddGoat() {
             <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-stone-200 border-dashed rounded-2xl hover:border-emerald-500 transition-colors bg-stone-50 relative group">
               {imagePreview ? (
                 <div className="relative w-full aspect-square rounded-xl overflow-hidden">
-                  <img src={imagePreview} alt="Preview" className="object-cover w-full h-full" />
+                  <img src={imagePreview} alt="Preview" className="object-cover w-full h-full" referrerPolicy="no-referrer" />
                   <button
                     type="button"
                     onClick={() => { setImagePreview(null); setFormData(p => ({...p, image: ''})) }}
@@ -166,7 +197,7 @@ export default function AddGoat() {
         
         <div className="px-6 py-5 bg-stone-50 border-t border-stone-200 flex items-center justify-end space-x-3">
           <Button type="button" variant="ghost" onClick={() => navigate('/dashboard')}>Cancel</Button>
-          <Button type="submit" isLoading={isCreating || isUploading}>Save Goat</Button>
+          <Button type="submit" isLoading={isUpdating || isUploading}>Update Goat</Button>
         </div>
       </form>
     </motion.div>

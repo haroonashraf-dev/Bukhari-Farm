@@ -32,7 +32,7 @@ export const goatsApi = createApi({
       }),
       invalidatesTags: (result, error, { id }) => [{ type: 'Goat', id }, 'Goat'],
     }),
-    archiveGoat: builder.mutation({
+    deleteGoat: builder.mutation({
       query: (id) => ({
         url: `/goats/${id}`,
         method: 'DELETE',
@@ -58,6 +58,6 @@ export const {
   useGetGoatByIdQuery,
   useCreateGoatMutation,
   useUpdateGoatMutation,
-  useArchiveGoatMutation,
+  useDeleteGoatMutation,
   useUploadImageMutation,
 } = goatsApi;

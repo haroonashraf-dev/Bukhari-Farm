@@ -55,14 +55,14 @@ export const updateGoat = asyncHandler(async (req, res) => {
   });
 });
 
-// @desc    Archive (soft delete) goat
+// @desc    Delete goat
 // @route   DELETE /api/goats/:id
 // @access  Private
-export const archiveGoat = asyncHandler(async (req, res) => {
-  await goatService.archiveGoat(req.params.id);
+export const deleteGoat = asyncHandler(async (req, res) => {
+  await goatService.deleteGoat(req.params.id);
   
   res.status(200).json({
     success: true,
-    message: 'Goat archived successfully',
+    message: 'Goat deleted successfully',
   });
 });

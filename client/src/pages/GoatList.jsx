@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Search, Filter, Eye, Edit, Trash2, Plus, Activity, Users, Heart } from 'lucide-react';
-import { useGetGoatsQuery, useArchiveGoatMutation } from '../features/goats/goatsApi';
+import { useGetGoatsQuery, useDeleteGoatMutation } from '../features/goats/goatsApi';
 import Button from '../components/common/Button';
 import Badge from '../components/common/Badge';
 import toast from 'react-hot-toast';
@@ -13,28 +13,31 @@ export default function GoatList() {
   const [statusFilter, setStatusFilter] = useState('');
   
   const { data, isLoading } = useGetGoatsQuery({ search: searchTerm, status: statusFilter });
-  const [archiveGoat] = useArchiveGoatMutation();
+  const [deleteGoat] = useDeleteGoatMutation();
 
-  const handleArchive = async (id) => {
-    if (window.confirm('Are you sure you want to archive this goat?')) {
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to permanently delete this goat?')) {
       try {
-        await archiveGoat(id).unwrap();
-        toast.success('Goat archived successfully');
+        await deleteGoat(id).unwrap();
+        toast.success('Goat deleted successfully');
       } catch (err) {
-        toast.error('Failed to archive goat');
+        toast.error('Failed to delete goat');
       }
     }
   };
 
   const goats = data?.data || [];
-  const totalGoats = goats.length;
   const activeGoats = goats.filter(g => g.status === 'active').length;
   const pregnantGoats = goats.filter(g => g.status === 'pregnant').length;
+  const currentHerd = activeGoats + pregnantGoats;
+  const soldGoats = goats.filter(g => g.status === 'sold').length;
+  const deadGoats = goats.filter(g => g.status === 'dead').length;
 
   const stats = [
-    { name: 'Total Herd', value: totalGoats, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-100' },
-    { name: 'Active Goats', value: activeGoats, icon: Activity, color: 'text-blue-600', bg: 'bg-blue-100' },
+    { name: 'Current Herd', value: currentHerd, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-100' },
     { name: 'Pregnant', value: pregnantGoats, icon: Heart, color: 'text-amber-600', bg: 'bg-amber-100' },
+    { name: 'Sold', value: soldGoats, icon: Activity, color: 'text-blue-600', bg: 'bg-blue-100' },
+    { name: 'Dead', value: deadGoats, icon: Trash2, color: 'text-stone-600', bg: 'bg-stone-100' },
   ];
 
   return (
@@ -59,7 +62,7 @@ export default function GoatList() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {stats.map((stat, index) => (
           <motion.div
             key={stat.name}
@@ -152,13 +155,13 @@ export default function GoatList() {
                         <div className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
                           <img 
                             className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl object-cover border border-stone-200" 
-                            src={goat.image || `https://ui-avatars.com/api/?name=${goat.name}&background=random`} 
-                            alt={goat.name} 
+                            src={goat.image || `https://ui-avatars.com/api/?name=${goat.name || goat.tagNumber}&background=random`} 
+                            alt={goat.name || goat.tagNumber} 
                             referrerPolicy="no-referrer"
                           />
                         </div>
                         <div className="ml-3 sm:ml-4">
-                          <div className="text-sm font-bold text-stone-900">{goat.name}</div>
+                          <div className="text-sm font-bold text-stone-900">{goat.name || 'Unnamed Goat'}</div>
                           <div className="text-xs sm:text-sm text-stone-500 font-mono mt-0.5">{goat.tagNumber}</div>
                         </div>
                       </div>
@@ -171,19 +174,22 @@ export default function GoatList() {
                       <Badge status={goat.status}>{goat.status.charAt(0).toUpperCase() + goat.status.slice(1)}</Badge>
                     </td>
                     <td className="px-4 sm:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex items-center justify-end gap-1 sm:gap-2 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                      {/* CHANGED HERE: Removed 'lg:opacity-0 lg:group-hover:opacity-100' to make buttons always visible */}
+                      <div className="flex items-center justify-end gap-1 sm:gap-2 opacity-100 transition-opacity">
                         <Link to={`/dashboard/goat/${goat._id}`}>
                           <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
                             <Eye className="h-4 w-4" />
                           </Button>
                         </Link>
-                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-blue-600 hover:text-blue-700 hover:bg-blue-50">
-                          <Edit className="h-4 w-4" />
-                        </Button>
+                        <Link to={`/dashboard/edit/${goat._id}`}>
+                          <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        </Link>
                         <Button 
                           variant="ghost" 
                           size="sm" 
-                          onClick={() => handleArchive(goat._id)}
+                          onClick={() => handleDelete(goat._id)}
                           className="h-8 w-8 p-0 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4" />

@@ -32,7 +32,7 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">Portal</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/dashboard" className="hover:text-emerald-400 transition-colors">Staff Login</Link></li>
+              <li><Link to="/" className="hover:text-emerald-400 transition-colors">Staff Login</Link></li>
               <li><Link to="/dashboard" className="hover:text-emerald-400 transition-colors">Management Dashboard</Link></li>
             </ul>
           </div>

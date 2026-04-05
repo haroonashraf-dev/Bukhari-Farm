@@ -7,6 +7,7 @@ import Contact from './pages/public/Contact';
 import Layout from './components/layout/Layout';
 import GoatList from './pages/GoatList';
 import AddGoat from './pages/AddGoat';
+import EditGoat from './pages/EditGoat';
 import GoatProfile from './pages/GoatProfile';
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
         <Route path="/dashboard" element={<Layout />}>
           <Route index element={<GoatList />} />
           <Route path="add" element={<AddGoat />} />
+           <Route path="edit/:id" element={<EditGoat />} />
           <Route path="goat/:id" element={<GoatProfile />} />
         </Route>
       </Routes>

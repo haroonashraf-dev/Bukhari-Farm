@@ -79,7 +79,7 @@ export const updateGoat = async (id, updateData) => {
   }
 
   const updatedGoat = await Goat.findByIdAndUpdate(id, updateData, {
-    new: true,
+    returnDocument: 'after',
     runValidators: true,
   });
 
@@ -87,14 +87,10 @@ export const updateGoat = async (id, updateData) => {
 };
 
 /**
- * Soft delete (archive) a goat
+ * Hard delete a goat
  */
-export const archiveGoat = async (id) => {
-  const goat = await Goat.findOneAndUpdate(
-    { _id: id, isArchived: false },
-    { isArchived: true },
-    { new: true }
-  );
+export const deleteGoat = async (id) => {
+  const goat = await Goat.findByIdAndDelete(id);
 
   if (!goat) {
     throw new CustomError('Goat not found', 404);

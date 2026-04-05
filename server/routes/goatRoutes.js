@@ -4,7 +4,7 @@ import {
   getGoats,
   getGoatById,
   updateGoat,
-  archiveGoat,
+  deleteGoat,
 } from '../controllers/goatController.js';
 
 const router = express.Router();
@@ -16,6 +16,6 @@ router.route('/')
 router.route('/:id')
   .get(getGoatById)
   .put(updateGoat)
-  .delete(archiveGoat);
+  .delete(deleteGoat);
 
 export default router;
