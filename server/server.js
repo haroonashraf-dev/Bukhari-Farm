@@ -3,11 +3,11 @@ import { createServer as createViteServer } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import cors from 'cors';
-import connectDB from './server/config/db.js';
-import { errorHandler, notFound } from './server/middlewares/errorHandler.js';
-import { checkDbConnection } from './server/middlewares/dbCheck.js';
-import goatRoutes from './server/routes/goatRoutes.js';
-import uploadRoutes from './server/routes/uploadRoutes.js';
+import connectDB from './config/db.js';
+import { errorHandler, notFound } from './middlewares/errorHandler.js';
+import { checkDbConnection } from './middlewares/dbCheck.js';
+import goatRoutes from './routes/goatRoutes.js';
+import uploadRoutes from './routes/uploadRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
