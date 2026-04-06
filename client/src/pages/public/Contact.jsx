@@ -9,7 +9,7 @@ const WhatsAppIcon = ({ className }) => (
 );
 
 export default function Contact() {
-  const phoneNumber = "923001234567"; // Replace with your actual WhatsApp number (include country code, no + or spaces)
+  const phoneNumber = "923137386619"; 
   const defaultMessage = "Hello Bukhari Farm! I would like to inquire about your goats.";
   const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(defaultMessage)}`;
 
