@@ -15,7 +15,7 @@ export default function About() {
         <div className="absolute inset-0 z-0">
          <img 
             src="https://multanfarms.com/wp-content/uploads/2025/09/Why-Is-Goat-Farming-in-Pakistan-So-Awesome-1024x559.webp" 
-            alt={`${settings.farmName} Goats`} 
+            alt="Bukhari-Farm About Page Banner Img"
             className="w-full h-full object-cover"
           />
 
