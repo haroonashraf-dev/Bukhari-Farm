@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Heart, Leaf, Award } from 'lucide-react';
-import AboutUs from '../../assets/about-us.webp';
+
 export default function About() {
   return (
     <div className="flex flex-col min-h-screen bg-stone-50">
@@ -13,11 +13,11 @@ export default function About() {
       {/* Hero Section */}
       <section className="relative h-[60vh] min-h-[400px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
-          <img 
-  src={AboutUs}
-  alt="Bukhari Farm Goats" 
-  className="w-full h-full object-cover"
-/>
+         <img 
+            src="https://multanfarms.com/wp-content/uploads/2025/09/Why-Is-Goat-Farming-in-Pakistan-So-Awesome-1024x559.webp" 
+            alt={`${settings.farmName} Goats`} 
+            className="w-full h-full object-cover"
+          />
 
           <div className="absolute inset-0 bg-stone-900/60" />
         </div>
