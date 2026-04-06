@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Leaf, Activity, CheckCircle2 } from 'lucide-react';
 import Button from '../../components/common/Button';
 import GoatLogo from '../../components/common/GoatLogo';
-import BukhariForm from '../../assets/bukhari-form.avif';
+
 export default function Home() {
   return (
     <div className="flex flex-col">
@@ -17,12 +17,11 @@ export default function Home() {
       <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <img 
-    src={BukhariForm}
-    alt="Bukhari-farm Home Page Banner Img"
-    className="w-full h-full object-cover"
-    loading="eager"
-  />
+     <img 
+            src="https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&q=80&w=2000" 
+            alt="Bukhari-Farm Home Page Banner Img" 
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-stone-900/60 mix-blend-multiply" />
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-transparent" />
         </div>
