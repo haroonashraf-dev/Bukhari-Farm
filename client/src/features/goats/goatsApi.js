@@ -2,8 +2,8 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const goatsApi = createApi({
   reducerPath: 'goatsApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
-  tagTypes: ['Goat'],
+  baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_API_URL || '/api' }),
+  tagTypes: ['Goat', 'GoatHistory'],
   endpoints: (builder) => ({
     getGoats: builder.query({
       query: (params) => ({
@@ -15,6 +15,10 @@ export const goatsApi = createApi({
     getGoatById: builder.query({
       query: (id) => `/goats/${id}`,
       providesTags: (result, error, id) => [{ type: 'Goat', id }],
+    }),
+    getGoatHistory: builder.query({
+      query: (id) => `/goats/${id}/history`,
+      providesTags: (result, error, id) => [{ type: 'GoatHistory', id }],
     }),
     createGoat: builder.mutation({
       query: (newGoat) => ({
@@ -56,6 +60,7 @@ export const goatsApi = createApi({
 export const {
   useGetGoatsQuery,
   useGetGoatByIdQuery,
+  useGetGoatHistoryQuery,
   useCreateGoatMutation,
   useUpdateGoatMutation,
   useDeleteGoatMutation,
