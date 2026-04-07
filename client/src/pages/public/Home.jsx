@@ -10,16 +10,16 @@ export default function Home() {
     <div className="flex flex-col">
       <Helmet>
         <title>Bukhari Farm | Premium Goat Breeding & Management</title>
-        <meta name="description" content="Welcome to Bukhari Farm. We specialize in premium goat breeding, health tracking, and modern farm management." />
+        <meta name="description" content={`Welcome to Bukhari Farm. We specialize in premium goat breeding, health tracking, and modern farm management.`} />
       </Helmet>
 
       {/* Hero Section */}
       <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-     <img 
+          <img 
             src="https://images.unsplash.com/photo-1524024973431-2ad916746881?auto=format&fit=crop&q=80&w=2000" 
-            alt="Bukhari-Farm Home Page Banner Img" 
+            alt="Goats on a farm" 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-stone-900/60 mix-blend-multiply" />
@@ -76,7 +76,7 @@ export default function Home() {
               {
                 icon: Activity,
                 title: 'Health Tracking',
-                desc: 'Individual digital profiles for every goat, tracking vaccinations, weight, and medical history.'
+                desc: 'Individual digital profiles for every goat, tracking vaccinations and weight.'
               },
               {
                 icon: Leaf,

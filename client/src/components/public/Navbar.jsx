@@ -1,26 +1,37 @@
 import { useState, useEffect } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Menu, X, LogOut } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import GoatLogo from '../common/GoatLogo';
 import Button from '../common/Button';
 import { cn } from '../../utils/cn';
+import { logout } from '../../features/auth/authSlice';
 
-const navLinks = [
+const publicNavLinks = [
   { name: 'Home', path: '/' },
   { name: 'About Us', path: '/about' },
   { name: 'Contact', path: '/contact' },
+];
+
+const privateNavLinks = [
+  { name: 'Dashboard', path: '/dashboard' },
+  { name: 'Goats', path: '/dashboard/goats' },
 ];
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  
   const isContactPage = location.pathname === '/contact';
-  const showPortalButton = location.pathname === '/';
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   
   // Force the scrolled style (dark text, white bg) on pages without a dark hero section
-  const effectiveIsScrolled = isScrolled || isContactPage;
+  const effectiveIsScrolled = isScrolled || isContactPage || isAuthPage || isAuthenticated;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +45,13 @@ export default function Navbar() {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+  };
+
+  const currentNavLinks = isAuthenticated ? privateNavLinks : publicNavLinks;
 
   return (
     <header 
@@ -53,16 +71,16 @@ export default function Navbar() {
               <GoatLogo className="w-6 h-6" />
             </div>
             <span className={cn(
-              "text-2xl font-display font-bold tracking-tight transition-colors",
+              "text-2xl font-display font-bold tracking-tight transition-colors truncate max-w-[200px] sm:max-w-xs",
               effectiveIsScrolled || isMobileMenuOpen ? "text-stone-900" : "text-white"
             )}>
-              Bukhari <span className={effectiveIsScrolled || isMobileMenuOpen ? "text-emerald-600" : "text-emerald-400"}>Farm</span>
+              Bukhari Farm
             </span>
           </Link>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
+            {currentNavLinks.map((link) => (
               <NavLink
                 key={link.name}
                 to={link.path}
@@ -76,18 +94,48 @@ export default function Navbar() {
                 {link.name}
               </NavLink>
             ))}
+            {!isAuthenticated && (
+              <NavLink
+                to="/login"
+                className={({ isActive }) => cn(
+                  "text-sm font-medium transition-colors hover:text-emerald-500",
+                  isActive 
+                    ? (effectiveIsScrolled ? "text-emerald-600" : "text-emerald-400") 
+                    : (effectiveIsScrolled ? "text-stone-600" : "text-stone-200")
+                )}
+              >
+                Login
+              </NavLink>
+            )}
+            {isAuthenticated && (
+              <button
+                onClick={handleLogout}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-emerald-500 flex items-center",
+                  effectiveIsScrolled ? "text-stone-600" : "text-stone-200"
+                )}
+              >
+                <LogOut className="w-4 h-4 mr-1" /> Logout
+              </button>
+            )}
           </nav>
 
           {/* CTA Button */}
-          {showPortalButton && (
-            <div className="hidden md:flex items-center">
+          <div className="hidden md:flex items-center">
+            {isAuthenticated ? (
               <Link to="/dashboard">
+                <Button variant={effectiveIsScrolled ? 'primary' : 'secondary'} className={!effectiveIsScrolled ? "bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur-sm" : ""}>
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/login">
                 <Button variant={effectiveIsScrolled ? 'primary' : 'secondary'} className={!effectiveIsScrolled ? "bg-white/10 text-white border-white/20 hover:bg-white/20 backdrop-blur-sm" : ""}>
                   Farm Portal
                 </Button>
               </Link>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* Mobile Menu Button */}
           <button 
@@ -113,7 +161,7 @@ export default function Navbar() {
             className="md:hidden bg-white border-b border-stone-200 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-1">
-              {navLinks.map((link) => (
+              {currentNavLinks.map((link) => (
                 <NavLink
                   key={link.name}
                   to={link.path}
@@ -125,13 +173,36 @@ export default function Navbar() {
                   {link.name}
                 </NavLink>
               ))}
-              {showPortalButton && (
-                <div className="pt-4 pb-2">
+              {!isAuthenticated && (
+                <NavLink
+                  to="/login"
+                  className={({ isActive }) => cn(
+                    "block px-3 py-3 rounded-xl text-base font-medium",
+                    isActive ? "bg-emerald-50 text-emerald-600" : "text-stone-600 hover:bg-stone-50"
+                  )}
+                >
+                  Login
+                </NavLink>
+              )}
+              {isAuthenticated && (
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left block px-3 py-3 rounded-xl text-base font-medium text-stone-600 hover:bg-stone-50 flex items-center"
+                >
+                  <LogOut className="w-4 h-4 mr-2" /> Logout
+                </button>
+              )}
+              <div className="pt-4 pb-2">
+                {isAuthenticated ? (
                   <Link to="/dashboard" className="block w-full">
+                    <Button className="w-full">Dashboard</Button>
+                  </Link>
+                ) : (
+                  <Link to="/login" className="block w-full">
                     <Button className="w-full">Farm Portal</Button>
                   </Link>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </motion.div>
         )}

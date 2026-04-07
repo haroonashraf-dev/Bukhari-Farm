@@ -11,8 +11,8 @@ export default function Footer() {
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400">
                 <GoatLogo className="w-5 h-5" />
               </div>
-              <span className="text-xl font-display font-bold text-white tracking-tight">
-                Bukhari <span className="text-emerald-400">Farm</span>
+              <span className="text-xl font-display font-bold text-white tracking-tight truncate">
+                Bukhari Farm
               </span>
             </Link>
             <p className="text-sm text-stone-500 max-w-sm">
@@ -32,7 +32,7 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold mb-4">Portal</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link to="/" className="hover:text-emerald-400 transition-colors">Staff Login</Link></li>
+              <li><Link to="/dashboard" className="hover:text-emerald-400 transition-colors">Staff Login</Link></li>
               <li><Link to="/dashboard" className="hover:text-emerald-400 transition-colors">Management Dashboard</Link></li>
             </ul>
           </div>

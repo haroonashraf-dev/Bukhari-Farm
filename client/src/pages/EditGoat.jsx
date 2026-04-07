@@ -102,7 +102,7 @@ export default function EditGoat() {
     >
       <Helmet>
         <title>Edit Goat | Bukhari Farm</title>
-        <meta name="description" content="Edit goat details in the Bukhari Farm management system." />
+        <meta name="description" content={`Edit goat details in the Bukhari Farm management system.`} />
       </Helmet>
 
       <div className="mb-8">

@@ -28,7 +28,7 @@ export default function Layout() {
         {/* Mobile header */}
         <div className="lg:hidden flex items-center justify-between bg-white border-b border-stone-200 p-4 shadow-sm">
           <div className="flex items-center">
-            <span className="text-lg font-display font-bold text-stone-900 tracking-tight">Bukhari <span className="text-emerald-600">Farm</span></span>
+            <span className="text-lg font-display font-bold text-stone-900 tracking-tight truncate max-w-[200px]">Bukhari Farm</span>
           </div>
           <button 
             onClick={() => setIsSidebarOpen(true)} 

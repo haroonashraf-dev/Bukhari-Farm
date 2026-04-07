@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
-import { Search, Filter, Eye, Edit, Trash2, Plus, Activity, Users, Heart } from 'lucide-react';
+import { Search, Filter, Eye, Edit, Trash2, Plus, Activity, PawPrint, Heart } from 'lucide-react';
 import { useGetGoatsQuery, useDeleteGoatMutation } from '../features/goats/goatsApi';
 import Button from '../components/common/Button';
 import Badge from '../components/common/Badge';
@@ -12,6 +13,9 @@ export default function GoatList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   
+  const { user } = useSelector((state) => state.auth);
+  const canDelete = user?.role === 'admin' || user?.role === 'manager';
+
   const { data, isLoading } = useGetGoatsQuery({ search: searchTerm, status: statusFilter });
   const [deleteGoat] = useDeleteGoatMutation();
 
@@ -34,7 +38,7 @@ export default function GoatList() {
   const deadGoats = goats.filter(g => g.status === 'dead').length;
 
   const stats = [
-    { name: 'Current Herd', value: currentHerd, icon: Users, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+    { name: 'Current Herd', value: currentHerd, icon: PawPrint, color: 'text-emerald-600', bg: 'bg-emerald-100' },
     { name: 'Pregnant', value: pregnantGoats, icon: Heart, color: 'text-amber-600', bg: 'bg-amber-100' },
     { name: 'Sold', value: soldGoats, icon: Activity, color: 'text-blue-600', bg: 'bg-blue-100' },
     { name: 'Dead', value: deadGoats, icon: Trash2, color: 'text-stone-600', bg: 'bg-stone-100' },
@@ -44,7 +48,7 @@ export default function GoatList() {
     <div className="space-y-8">
       <Helmet>
         <title>Goat Management Dashboard | Bukhari Farm</title>
-        <meta name="description" content="Manage your goat herd, track status, and monitor health at Bukhari Farm." />
+        <meta name="description" content={`Manage your goat herd, track status, and monitor health at Bukhari Farm.`} />
       </Helmet>
 
       {/* Header */}
@@ -186,14 +190,16 @@ export default function GoatList() {
                             <Edit className="h-4 w-4" />
                           </Button>
                         </Link>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleDelete(goat._id)}
-                          className="h-8 w-8 p-0 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {canDelete && (
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => handleDelete(goat._id)}
+                            className="h-8 w-8 p-0 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </motion.tr>

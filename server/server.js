@@ -8,6 +8,7 @@ import { errorHandler, notFound } from './middlewares/errorHandler.js';
 import { checkDbConnection } from './middlewares/dbCheck.js';
 import goatRoutes from './routes/goatRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,9 +27,10 @@ async function startServer() {
 
   // API Routes
   app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', message: 'Bukhari Farm API is running' });
+    res.json({ status: 'ok', message: 'Farm API is running' });
   });
   
+  app.use('/api/auth', checkDbConnection, authRoutes);
   app.use('/api/goats', checkDbConnection, goatRoutes);
   app.use('/api/upload', uploadRoutes);
 
