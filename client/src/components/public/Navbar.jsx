@@ -14,11 +14,6 @@ const publicNavLinks = [
   { name: 'Contact', path: '/contact' },
 ];
 
-const privateNavLinks = [
-  { name: 'Dashboard', path: '/dashboard' },
-  { name: 'Goats', path: '/dashboard/goats' },
-];
-
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -31,7 +26,7 @@ export default function Navbar() {
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
   
   // Force the scrolled style (dark text, white bg) on pages without a dark hero section
-  const effectiveIsScrolled = isScrolled || isContactPage || isAuthPage || isAuthenticated;
+  const effectiveIsScrolled = isScrolled || isContactPage || isAuthPage;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,8 +45,6 @@ export default function Navbar() {
     dispatch(logout());
     navigate('/login');
   };
-
-  const currentNavLinks = isAuthenticated ? privateNavLinks : publicNavLinks;
 
   return (
     <header 
@@ -80,7 +73,7 @@ export default function Navbar() {
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center gap-8">
-            {currentNavLinks.map((link) => (
+            {publicNavLinks.map((link) => (
               <NavLink
                 key={link.name}
                 to={link.path}
@@ -161,7 +154,7 @@ export default function Navbar() {
             className="md:hidden bg-white border-b border-stone-200 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-1">
-              {currentNavLinks.map((link) => (
+              {publicNavLinks.map((link) => (
                 <NavLink
                   key={link.name}
                   to={link.path}
